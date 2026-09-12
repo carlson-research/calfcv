@@ -1,33 +1,29 @@
 Getting Started
 ===============
 
-This guide covers installing ``bib-ami``, launching the interactive web application, and running basic terminal lookups.
-
 Installation
 ------------
 
-Install the client directly from PyPI using ``pip``:
+Install ``calfcv`` directly from PyPI:
 
 .. code-block:: bash
 
-   pip install bib-ami
+   pip install calfcv
 
-*Requires Python 3.11 or higher.*
+Basic Usage
+-----------
 
-Launching the Web Interface
----------------------------
+``calfcv`` exposes standard Scikit-Learn estimator classes:
 
-For full visual library curation, open the interactive web interface in your default browser:
+.. code-block:: python
 
-.. code-block:: bash
+   from calfcv import CalfCV
+   from sklearn.datasets import make_classification
+   from sklearn.model_selection import train_test_split
 
-   bib-ami launch
+   X, y = make_classification(n_samples=500, n_features=20, random_state=42)
+   X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
 
-Command-Line Lookup
--------------------
-
-You can perform fast, single-citation lookups directly from your terminal:
-
-.. code-block:: bash
-
-   bib-ami lookup 10.1038/nature12345
+   model = CalfCV()
+   model.fit(X_train, y_train)
+   print("Selected features:", model.weight_vec_)

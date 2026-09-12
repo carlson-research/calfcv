@@ -1,25 +1,18 @@
-.. bib-ami documentation master file
+.. CalfCV documentation master file, created by
+   sphinx-quickstart on Sat Sep 12 09:01:00 2026.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-Welcome to bib-ami's documentation!
-===================================
+CalfCV documentation
+====================
 
-**bib-ami** is a command-line client and Python SDK for the bib-ami citation verification engine and web platform.
-
-By offloading registry matching and verification heuristics to the cloud, this thin client provides instant access to expert-level citation curation without the overhead of local database management or complex dependencies.
+``calfcv`` provides discrete step-forward feature selection and integer weighting for linear classification models in Scikit-Learn workflows.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Documentation
 
    getting_started
-   client_architecture
-   usage_guide
-   testing_guide
-   project_information
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   user_guide
+   api
+   auto_examples/index
