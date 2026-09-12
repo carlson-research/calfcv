@@ -20,9 +20,3 @@ CalfCV documentation
 
    releasing
    workflows
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Project Information
-
-   changelog
