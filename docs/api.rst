@@ -8,8 +8,14 @@ This page lists the public Python API for ``calfcv``.
 Estimators
 ----------
 
-.. autosummary::
-   :toctree: generated
+.. autoclass:: Calf
+   :members:
+   :inherited-members:
+   :undoc-members:
+   :show-inheritance:
 
-   Calf
-   CalfCV
+.. autoclass:: CalfCV
+   :members:
+   :inherited-members:
+   :undoc-members:
+   :show-inheritance:

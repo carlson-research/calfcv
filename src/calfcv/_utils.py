@@ -6,7 +6,20 @@ from joblib import Parallel, delayed
 
 
 def predict(X, w):
-    """Predict the classes from the weights and features."""
+    """Predict the classes from the weights and features.
+
+    Parameters
+    ----------
+    X : {array-like, sparse matrix} of shape (n_samples, n_features)
+        The training input features and samples.
+    w : array-like of shape (n_features,)
+        The weights applied to the features.
+
+    Returns
+    -------
+    y_pred : ndarray of shape (n_samples,)
+        The prediction of the ground truth.
+    """
     if issparse(X):
         Z = X.multiply(w)
         y_pred = np.asarray(Z.sum(axis=1)).ravel()
@@ -16,7 +29,28 @@ def predict(X, w):
 
 
 def _column_task(i, X_col, y, grid):
-    """Evaluate auc for predicting a single column."""
+    """Evaluate AUC for predicting a single column.
+
+    Parameters
+    ----------
+    i : int
+        The column index to evaluate.
+    X_col : sparse matrix of shape (n_samples, 1)
+        A single column of the training input features.
+    y : array-like of shape (n_samples,)
+        The target vector.
+    grid : array-like
+        A list or array of candidate weights.
+
+    Returns
+    -------
+    auc : float
+        The maximum prediction AUC for column i.
+    w : float
+        The weight that yields the highest AUC.
+    i : int
+        The column index.
+    """
     result = []
     for w in grid:
         Z = X_col * w
@@ -27,7 +61,25 @@ def _column_task(i, X_col, y, grid):
 
 
 def fit_columns(X, y, grid, n_jobs=-1):
-    """Fit using joblib parallelization."""
+    """Fit columns in parallel to find individual column AUCs.
+
+    Parameters
+    ----------
+    X : sparse matrix of shape (n_samples, n_features)
+        The training input features and samples.
+    y : array-like of shape (n_samples,)
+        The target vector.
+    grid : array-like
+        A list or array of candidate weights.
+    n_jobs : int, default=-1
+        The number of jobs to run in parallel. -1 means using all processors.
+
+    Returns
+    -------
+    candidates : list of tuples
+        A sorted list of tuples in descending order of AUC.
+        Each tuple contains (auc, weight, column_index).
+    """
     X_csc = X.tocsc()
     candidates = Parallel(n_jobs=n_jobs)(
         delayed(_column_task)(i, X_csc[:, i], y, grid) for i in range(X.shape[1])
@@ -36,7 +88,32 @@ def fit_columns(X, y, grid, n_jobs=-1):
 
 
 def fit_hv_sparse(X, y, grid, auc_tol=1e-6, order_col=False, verbose=False):
-    """Find the weights that best fit sparse X using points from grid."""
+    """Find the weights that best fit sparse X using points from the grid.
+
+    Parameters
+    ----------
+    X : sparse matrix of shape (n_samples, n_features)
+        The training input features and samples.
+    y : array-like of shape (n_samples,)
+        The ground truth vector.
+    grid : array-like
+        A list or array of candidate weights.
+    auc_tol : float, default=1e-6
+        Tolerance above max AUC for inclusion of a feature index.
+    order_col : bool, default=False
+        Whether to order the columns by individual AUC prior to fitting.
+    verbose : bool, default=False
+        If True, print status messages.
+
+    Returns
+    -------
+    auc : list of float
+        The list of cumulative maximum AUCs at each step.
+    weights : list of float
+        The list of optimal weights corresponding to the selected features.
+    index : list of int
+        The list of feature indices selected.
+    """
     X_csc = X.tocsc()
     if order_col:
         tups = fit_columns(X_csc, y, grid)
@@ -93,7 +170,28 @@ def fit_hv_sparse(X, y, grid, auc_tol=1e-6, order_col=False, verbose=False):
 
 
 def fit_hv(X, y, grid, verbose=False):
-    """Find the weights that best fit dense X using points from grid."""
+    """Find the weights that best fit dense X using points from the grid.
+
+    Parameters
+    ----------
+    X : array-like of shape (n_samples, n_features)
+        The training input features and samples.
+    y : array-like of shape (n_samples,)
+        The ground truth vector.
+    grid : array-like
+        A list or array of candidate weights.
+    verbose : bool, default=False
+        If True, print status messages.
+
+    Returns
+    -------
+    auc : list of float
+        The list of cumulative maximum AUCs at each step.
+    weights : list of float
+        The list of optimal weights corresponding to the selected features.
+    index : list of int
+        The list of feature indices selected.
+    """
     weights = []
     auc = []
     index = []
