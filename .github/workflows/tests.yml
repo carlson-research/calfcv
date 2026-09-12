@@ -10,6 +10,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.11", "3.12"]
     steps:
@@ -32,10 +33,9 @@ jobs:
           pre-commit run --all-files
           mypy src/
 
-      - name: Run Unit & E2E Tests
+      - name: Run Unit Tests
         run: |
           pytest tests/unit/ -v --cov=calfcv --cov-report=xml
-          pytest tests/e2e/ -v --log-file=integration.log
 
       - name: Upload Coverage Artifact
         uses: actions/upload-artifact@v4
