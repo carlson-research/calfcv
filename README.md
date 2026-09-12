@@ -6,18 +6,18 @@
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://carlson-research.github.io/calfcv/)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://github.com/carlson-research/calfcv/blob/main/LICENSE)
 
-A Python implementation of the Coarse Approximation Linear Function (CALF) algorithm for binomial classification and feature selection. 
-This package provides binary classification with parsimonious and interpretable feature selection. 
+A Python implementation of the Coarse Approximation Linear Function (CALF) algorithm for binomial classification and feature selection.
+This package provides binary classification with parsimonious and interpretable feature selection.
 
 ## Features
 
-* **Integer Weighting:** Assigns integer weights for 
+* **Integer Weighting:** Assigns integer weights for
   interpretable linear models.
-* **Cross-Validation:** Built in cross validation for 
+* **Cross-Validation:** Built in cross validation for
   automated  hyperparameter tuning and feature selection.
-* **Sparse Data Support:** Processes high-dimensional 
+* **Sparse Data Support:** Processes high-dimensional
   `scipy.sparse` matrices with stable memory usage.
-* **Multiclass and Multilabel:** Supports Scikit-Learn 
+* **Multiclass and Multilabel:** Supports Scikit-Learn
   `OneVsRestClassifier`.
 * **Scikit-Learn Compatibility:** Plugs directly into `Pipeline`, `GridSearchCV`, and standard estimator workflows.
 
@@ -71,5 +71,5 @@ This project is licensed under the BSD-3-Clause License - see the [LICENSE](LICE
 ## Authors
 
 * **CALF Algorithm**: Clark D. Jeffries, John R. Ford, Jeffrey L. Tilson, Diana O. Perkins, Darius M. Bost, Dayne L. Filer, and Kirk C. Wilhelmsen
-* **CalfCV Python Package (`calfcv`)**: Rolf Carlson 
+* **CalfCV Python Package (`calfcv`)**: Rolf Carlson
   (rolf@hrolfrc.com)

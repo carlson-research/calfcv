@@ -1,6 +1,6 @@
 import time
 import numpy as np
-from scipy.sparse import issparse, csr_array
+from scipy.sparse import issparse
 from scipy.special import expit
 from sklearn.base import BaseEstimator, ClassifierMixin, TransformerMixin
 from sklearn.preprocessing import minmax_scale
@@ -27,38 +27,50 @@ class Calf(ClassifierMixin, TransformerMixin, BaseEstimator):
 
     def _validate_input(self, X, reset=False):
         if HAS_VALIDATE_DATA:
-            return validate_data(self, X=X, accept_sparse=["csr", "csc", "coo"], reset=reset)
+            return validate_data(
+                self, X=X, accept_sparse=["csr", "csc", "coo"], reset=reset
+            )
         return self._validate_data(X, accept_sparse=["csr", "csc", "coo"], reset=reset)
 
     def fit(self, X, y):
         if y is None:
-            raise ValueError('requires y to be passed, but the target y is None')
+            raise ValueError("requires y to be passed, but the target y is None")
 
         # Fix 1: Handle unknown object dtypes cleanly
         y_type = type_of_target(y)
-        if y_type == 'unknown':
+        if y_type == "unknown":
             raise ValueError("Unknown label type: target y must be binary.")
-        if y_type != 'binary':
-            raise ValueError(f"Only binary classification is supported. The type of the target is {y_type}.")
+        if y_type != "binary":
+            raise ValueError(
+                f"Only binary classification is supported. The type of the target is {y_type}."
+            )
 
         if HAS_VALIDATE_DATA:
-            X, y = validate_data(self, X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True)
+            X, y = validate_data(
+                self, X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True
+            )
         else:
-            X, y = self._validate_data(X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True)
+            X, y = self._validate_data(
+                X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True
+            )
 
         self.classes_ = unique_labels(y)
         self.X_ = X
         self.y_ = y
 
         if self.verbose:
-            print(f'fitting {X.shape[1]} features.')
+            print(f"fitting {X.shape[1]} features.")
 
         start = time.time()
 
         if issparse(X):
             self.auc_, self.weights_, self.feature_index_ = fit_hv_sparse(
-                X, y, grid=self.grid, auc_tol=self.auc_tol,
-                order_col=self.order_col, verbose=self.verbose
+                X,
+                y,
+                grid=self.grid,
+                auc_tol=self.auc_tol,
+                order_col=self.order_col,
+                verbose=self.verbose,
             )
         else:
             self.auc_, self.weights_, self.feature_index_ = fit_hv(
@@ -83,8 +95,7 @@ class Calf(ClassifierMixin, TransformerMixin, BaseEstimator):
 
         scores = np.array(
             minmax_scale(
-                predict(X[:, self.feature_index_], self.weights_),
-                feature_range=(-1, 1)
+                predict(X[:, self.feature_index_], self.weights_), feature_range=(-1, 1)
             )
         )
         return scores
@@ -121,7 +132,7 @@ class Calf(ClassifierMixin, TransformerMixin, BaseEstimator):
         return self.fit(X, y).transform(X)
 
     def _more_tags(self):
-        return {'poor_score': True, 'non_deterministic': True, 'binary_only': True}
+        return {"poor_score": True, "non_deterministic": True, "binary_only": True}
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()

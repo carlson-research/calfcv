@@ -39,7 +39,7 @@ autosummary_generate = True
 numpydoc_show_class_members = False
 
 html_theme = "pydata_sphinx_theme"
-html_static_path = []
+html_static_path: list[str] = ["_static"]
 
 sphinx_gallery_conf = {
     "examples_dirs": "../examples",

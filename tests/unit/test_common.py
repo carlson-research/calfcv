@@ -1,6 +1,7 @@
 from sklearn.utils.estimator_checks import parametrize_with_checks
 from calfcv import Calf, CalfCV
 
+
 @parametrize_with_checks([Calf(), CalfCV()])
 def test_all_estimators(estimator, check):
     """

@@ -16,10 +16,10 @@ def test_calf_sparse(sparse_data):
     clf.fit(X, y)
 
     # Modern scikit-learn relies on trailing underscores rather than an is_fitted_ boolean
-    assert hasattr(clf, 'classes_')
-    assert hasattr(clf, 'X_')
-    assert hasattr(clf, 'y_')
-    assert hasattr(clf, 'coef_')
+    assert hasattr(clf, "classes_")
+    assert hasattr(clf, "X_")
+    assert hasattr(clf, "y_")
+    assert hasattr(clf, "coef_")
 
     assert clf.auc_ == [0.5, 0.875, 1.0]
     assert clf.coef_ == [1, 1, -1, 0, 0, 0, 0, 0, 0, 0]
@@ -34,9 +34,9 @@ def test_calf(data):
     assert clf.grid == (-1, 1)
 
     clf.fit(X, y)
-    assert hasattr(clf, 'classes_')
-    assert hasattr(clf, 'X_')
-    assert hasattr(clf, 'y_')
+    assert hasattr(clf, "classes_")
+    assert hasattr(clf, "X_")
+    assert hasattr(clf, "y_")
 
     y_pred = clf.predict(X)
     assert y_pred.shape == (X.shape[0],)

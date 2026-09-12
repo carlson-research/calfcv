@@ -21,13 +21,7 @@ def _column_task(i, X_col, y, grid):
     for w in grid:
         Z = X_col * w
         y_score = np.nan_to_num(Z.toarray(), copy=False).ravel()
-        result.append(
-            (
-                roc_auc_score(y_true=y, y_score=y_score),
-                time.time(),
-                w
-            )
-        )
+        result.append((roc_auc_score(y_true=y, y_score=y_score), time.time(), w))
     auc, _, w = max(result)
     return auc, w, i
 
@@ -63,12 +57,7 @@ def fit_hv_sparse(X, y, grid, auc_tol=1e-6, order_col=False, verbose=False):
             Z = U + V * w
             y_score = np.nan_to_num(Z.toarray().ravel())
             candidates.append(
-                (
-                    roc_auc_score(y_true=y, y_score=y_score),
-                    time.time(),
-                    Z,
-                    w
-                )
+                (roc_auc_score(y_true=y, y_score=y_score), time.time(), Z, w)
             )
         max_auc, _, U, w_c = max(candidates)
 
@@ -77,21 +66,27 @@ def fit_hv_sparse(X, y, grid, auc_tol=1e-6, order_col=False, verbose=False):
             index.append(i)
 
             if auc and verbose:
-                print(f'Count {count} of {X.shape[1]} fit feature {i} '
-                      f'feature auc: {round(max_auc, 4)} > max auc: {round(max(auc), 4)} '
-                      f'weight: {w_c} selected features: {len(index)} auc tol: {auc_tol}')
+                print(
+                    f"Count {count} of {X.shape[1]} fit feature {i} "
+                    f"feature auc: {round(max_auc, 4)} > max auc: {round(max(auc), 4)} "
+                    f"weight: {w_c} selected features: {len(index)} auc tol: {auc_tol}"
+                )
         else:
             if count % 100 == 0 and verbose:
-                print(f'Count {count} of {X.shape[1]} max auc: {round(max(auc), 4)} '
-                      f'number of contributing features {len(index)}')
+                print(
+                    f"Count {count} of {X.shape[1]} max auc: {round(max(auc), 4)} "
+                    f"number of contributing features {len(index)}"
+                )
 
         count += 1
         auc.append(max_auc)
 
         if max(auc) >= 0.999:
             if verbose:
-                print(f'found {len(index)} features that contribute positive auc.\n'
-                      'auc threshold reached, breaking ...')
+                print(
+                    f"found {len(index)} features that contribute positive auc.\n"
+                    "auc threshold reached, breaking ..."
+                )
             break
 
     return auc, weights, index
@@ -110,12 +105,7 @@ def fit_hv(X, y, grid, verbose=False):
         for w in grid:
             y_score = np.nan_to_num(U + V * w)
             candidates.append(
-                (
-                    roc_auc_score(y_true=y, y_score=y_score),
-                    time.time(),
-                    y_score,
-                    w
-                )
+                (roc_auc_score(y_true=y, y_score=y_score), time.time(), y_score, w)
             )
         max_auc, _, U, w_c = sorted(candidates, reverse=True)[0]
 
@@ -127,18 +117,24 @@ def fit_hv(X, y, grid, verbose=False):
 
         if verbose:
             if max_auc > max(auc):
-                print(f'fit feature {i} of {X.shape[1]} feature auc: {round(max_auc, 4)} '
-                      f'> max auc: {round(max(auc), 4)} weight: {w_c} '
-                      f'number of contributing features {len(index)}')
+                print(
+                    f"fit feature {i} of {X.shape[1]} feature auc: {round(max_auc, 4)} "
+                    f"> max auc: {round(max(auc), 4)} weight: {w_c} "
+                    f"number of contributing features {len(index)}"
+                )
             else:
-                print(f'fit feature {i} of {X.shape[1]} feature auc: {round(max_auc, 4)} '
-                      f'<= max auc: {round(max(auc), 4)} weight: 0 '
-                      f'number of contributing features {len(index)}')
+                print(
+                    f"fit feature {i} of {X.shape[1]} feature auc: {round(max_auc, 4)} "
+                    f"<= max auc: {round(max(auc), 4)} weight: 0 "
+                    f"number of contributing features {len(index)}"
+                )
 
         if max(auc) >= 0.999:
             if verbose:
-                print(f'found {len(index)} features that contribute positive auc.\n'
-                      'auc threshold reached, breaking ...')
+                print(
+                    f"found {len(index)} features that contribute positive auc.\n"
+                    "auc threshold reached, breaking ..."
+                )
             break
 
     return auc, weights, index

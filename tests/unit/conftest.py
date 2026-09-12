@@ -2,14 +2,15 @@ import pytest
 from sklearn.datasets import make_classification
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+
 @pytest.fixture
 def sparse_data():
-    """ Make a sparse classification problem for visual inspection. """
+    """Make a sparse classification problem for visual inspection."""
     text = [
         "It was the best of times",
         "it was the worst of times",
         "it was the age of wisdom",
-        "it was the age of foolishness"
+        "it was the age of foolishness",
     ]
 
     X = TfidfVectorizer().fit_transform(text)
@@ -19,9 +20,10 @@ def sparse_data():
 
     return X, y
 
+
 @pytest.fixture
 def data():
-    """ Make a dense classification problem for visual inspection. """
+    """Make a dense classification problem for visual inspection."""
     X, y = make_classification(
         n_samples=10,
         n_features=3,
@@ -29,6 +31,6 @@ def data():
         n_redundant=1,
         n_classes=2,
         hypercube=True,
-        random_state=8
+        random_state=8,
     )
     return X, y

@@ -9,10 +9,10 @@ def test_calfcv(data):
     clf.fit(X, y)
 
     # Verify the scikit-learn standard trailing underscore attributes
-    assert hasattr(clf, 'classes_')
-    assert hasattr(clf, 'X_')
-    assert hasattr(clf, 'y_')
-    assert hasattr(clf, 'model_')
+    assert hasattr(clf, "classes_")
+    assert hasattr(clf, "X_")
+    assert hasattr(clf, "y_")
+    assert hasattr(clf, "model_")
 
     y_pred = clf.predict(X)
     assert y_pred.shape == (X.shape[0],)

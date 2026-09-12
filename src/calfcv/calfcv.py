@@ -10,9 +10,11 @@ from .calf import Calf
 
 try:
     from sklearn.utils.validation import validate_data
+
     HAS_VALIDATE_DATA = True
 except ImportError:
     HAS_VALIDATE_DATA = False
+
 
 class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
     """Course approximation linear function with cross validation"""
@@ -25,40 +27,46 @@ class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
 
     def fit(self, X, y):
         if y is None:
-            raise ValueError('requires y to be passed, but the target y is None')
+            raise ValueError("requires y to be passed, but the target y is None")
 
         # Fix 1: Handle unknown object dtypes cleanly
         y_type = type_of_target(y)
-        if y_type == 'unknown':
-             raise ValueError("Unknown label type: target y must be binary.")
-        if y_type != 'binary':
-            raise ValueError(f"Only binary classification is supported. The type of the target is {y_type}.")
+        if y_type == "unknown":
+            raise ValueError("Unknown label type: target y must be binary.")
+        if y_type != "binary":
+            raise ValueError(
+                f"Only binary classification is supported. The type of the target is {y_type}."
+            )
 
         if HAS_VALIDATE_DATA:
-            X, y = validate_data(self, X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True)
+            X, y = validate_data(
+                self, X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True
+            )
         else:
-            X, y = self._validate_data(X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True)
+            X, y = self._validate_data(
+                X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True
+            )
 
         self.X_ = X
         self.y_ = y
         self.classes_ = unique_labels(y)
 
         parameter_grid = {
-            'classifier__grid': [self.grid],
-            'classifier__auc_tol': [self.auc_tol],
-            'classifier__order_col': [self.order_col],
-            'classifier__verbose': [self.verbose]
+            "classifier__grid": [self.grid],
+            "classifier__auc_tol": [self.auc_tol],
+            "classifier__order_col": [self.order_col],
+            "classifier__verbose": [self.verbose],
         }
 
-        steps = [('classifier', Calf())]
+        steps = [("classifier", Calf())]
         if not issparse(X):
-            steps.insert(0, ('scaler', StandardScaler()))
+            steps.insert(0, ("scaler", StandardScaler()))
 
         self.model_ = GridSearchCV(
             estimator=Pipeline(steps=steps),
             param_grid=parameter_grid,
             scoring="roc_auc",
-            verbose=self.verbose
+            verbose=self.verbose,
         )
 
         start = time.time()
@@ -66,8 +74,8 @@ class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
         self.fit_time_ = time.time() - start
 
         self.best_score_ = self.model_.best_score_
-        self.best_coef_ = self.model_.best_estimator_['classifier'].coef_
-        self.best_auc_ = self.model_.best_estimator_['classifier'].auc_
+        self.best_coef_ = self.model_.best_estimator_["classifier"].coef_
+        self.best_auc_ = self.model_.best_estimator_["classifier"].auc_
 
         return self
 
@@ -91,7 +99,7 @@ class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
         return self.fit(X, y).model_.transform(X)
 
     def _more_tags(self):
-        return {'poor_score': True, 'non_deterministic': True, 'binary_only': True}
+        return {"poor_score": True, "non_deterministic": True, "binary_only": True}
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()
