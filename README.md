@@ -1,76 +1,75 @@
-# bib-ami
+# calfcv
 
-[![CI](https://github.com/carlson-research/bib-ami-client/actions/workflows/tests.yml/badge.svg)](https://github.com/carlson-research/bib-ami-client/actions)
-[![PyPI Version](https://img.shields.io/pypi/v/bib-ami.svg)](https://pypi.org/project/bib-ami/)
-[![Python Version](https://img.shields.io/pypi/pyversions/bib-ami.svg)](https://pypi.org/project/bib-ami/)
-[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://carlson-research.github.io/bib-ami-client/)
+[![CI](https://github.com/carlson-research/calfcv/actions/workflows/tests.yml/badge.svg)](https://github.com/carlson-research/calfcv/actions)
+[![PyPI Version](https://img.shields.io/pypi/v/calfcv.svg)](https://pypi.org/project/calfcv/)
+[![Python Version](https://img.shields.io/pypi/pyversions/calfcv.svg)](https://pypi.org/project/calfcv/)
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://carlson-research.github.io/calfcv/)
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://github.com/carlson-research/calfcv/blob/main/LICENSE)
 
-A lightweight, thin-client CLI for the **bib-ami** citation verification service. This package routes all citation metadata lookups and verification logic to the proprietary backend engine.
+A Python implementation of the Coarse Approximation Linear Function (CALF) algorithm for binomial classification and feature selection. 
+This package provides binary classification with parsimonious and interpretable feature selection. 
+
+## Features
+
+* **Integer Weighting:** Assigns integer weights for 
+  interpretable linear models.
+* **Cross-Validation:** Built in cross validation for 
+  automated  hyperparameter tuning and feature selection.
+* **Sparse Data Support:** Processes high-dimensional 
+  `scipy.sparse` matrices with stable memory usage.
+* **Multiclass and Multilabel:** Supports Scikit-Learn 
+  `OneVsRestClassifier`.
+* **Scikit-Learn Compatibility:** Plugs directly into `Pipeline`, `GridSearchCV`, and standard estimator workflows.
 
 ## Installation
 
-Install the client directly from PyPI:
+Use pip to install calfcv:
 
 ```bash
-pip install bib-ami
+pip install calfcv
 ```
 
-## Configuration
+## Quick Start Example
 
-To authenticate with the backend API, set your API key as an environment variable:
+Make a classification problem and train the classifier:
 
-```bash
-export BIB_AMI_API_KEY="your-secret-api-key"
+```python
+from calfcv import CalfCV
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+
+# Make a classification problem
+seed = 42
+X, y = make_classification(
+    n_samples=30,
+    n_features=5,
+    n_informative=2,
+    n_redundant=2,
+    n_classes=2,
+    random_state=seed
+)
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=seed)
+
+# Train the classifier
+cls = CalfCV().fit(X_train, y_train)
+
+# Get the score on unseen data
+print(cls.score(X_test, y_test))
+# Output: 0.875
 ```
 
-## Usage
+## Citation
 
-The client provides two primary commands via the terminal:
+If you use this package in your research, please cite:
 
-### 1. Citation Lookup
-Query citation metadata using a DOI, arXiv ID, or standard reference identifier:
+> Jeffries, C.D., Ford, J.R., Tilson, J.L. et al. *A greedy regression algorithm with coarse weights offers novel advantages.* Sci Rep 12, 5440 (2022). https://doi.org/10.1038/s41598-022-09415-2
 
-```bash
-bib-ami lookup 10.1038/nature12345
-```
+## License
 
-### 2. Launch Web App
-Open the interactive `bib-ami` web application in your default system browser:
+This project is licensed under the BSD-3-Clause License - see the [LICENSE](LICENSE) file for details.
 
-```bash
-bib-ami launch
-```
-*(You can optionally pass a custom URL using `bib-ami launch --url https://custom.bib-ami.com`)*
+## Authors
 
-### Help
-View all available commands and options:
-
-```bash
-bib-ami --help
-```
-
-## Development & Testing
-
-This project uses `pyproject.toml` for dependency management and requires Python 3.11+.
-
-Clone the repository and install the development dependencies in editable mode:
-
-```bash
-git clone [https://github.com/carlson-research/bib-ami-client.git](https://github.com/carlson-research/bib-ami-client.git)
-cd bib-ami-client
-pip install -e ".[dev]"
-```
-
-**Run the Test Suite:**
-Execute the complete unit and end-to-end test suite with terminal coverage reporting:
-
-```bash
-pytest tests/ --cov=bib_ami --cov-report=term-missing
-```
-
-**Code Quality:**
-This project enforces strict formatting and linting via `pre-commit`. Install the git hooks to run automatically before every commit:
-
-```bash
-pre-commit install
-```
+* **CALF Algorithm**: Clark D. Jeffries, John R. Ford, Jeffrey L. Tilson, Diana O. Perkins, Darius M. Bost, Dayne L. Filer, and Kirk C. Wilhelmsen
+* **CalfCV Python Package (`calfcv`)**: Rolf Carlson 
+  (rolf@hrolfrc.com)
