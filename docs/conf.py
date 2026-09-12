@@ -1,16 +1,36 @@
 import os
 import sys
+import tomllib
+from pathlib import Path
 
+# Insert src/ for autodoc
 sys.path.insert(0, os.path.abspath("../src"))
 
-project = "calfcv"
-copyright = "2026, Carlson Research"
-author = "Carlson Research"
+# Parse metadata directly from pyproject.toml
+pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+with open(pyproject_path, "rb") as f:
+    pyproject_data = tomllib.load(f)
+
+# Extract standard project metadata
+project_meta = pyproject_data.get("project", {})
+project = project_meta.get("name", "calfcv")
+
+authors_list = project_meta.get("authors", [])
+author = ", ".join([a.get("name", "") for a in authors_list if "name" in a])
+copyright = f"2026, {author}"
+
+# Extract the organization/author email
+contact_email = ""
+for a in authors_list:
+    if "email" in a:
+        contact_email = a["email"]
+        break
 
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.viewcode",
+    "sphinx.ext.mathjax",
     "numpydoc",
     "sphinx_gallery.gen_gallery",
 ]

@@ -1,7 +1,4 @@
-.. CalfCV documentation master file, created by
-   sphinx-quickstart on Sat Sep 12 09:01:00 2026.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. CalfCV documentation master file
 
 CalfCV documentation
 ====================
@@ -10,9 +7,23 @@ CalfCV documentation
 
 .. toctree::
    :maxdepth: 2
-   :caption: Documentation
+   :caption: User Documentation
 
    getting_started
    user_guide
    api
    auto_examples/index
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Developer Guide
+
+   contributing
+   releasing
+   workflows
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Project Information
+
+   changelog

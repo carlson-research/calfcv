@@ -9,7 +9,9 @@ name = "calfcv"
 dynamic = ["version"]
 description = "Coarse Approximation Linear Function (CALF) Classifier"
 readme = "README.md"
-authors = [{name = "Carlson Research, LLC"}]
+authors = [
+    {name = "Carlson Research, LLC", email = "rolf@hrolfrc.com"}
+]
 license = "MIT"
 requires-python = ">=3.11"
 dependencies = [
