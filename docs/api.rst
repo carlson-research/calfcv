@@ -9,8 +9,7 @@ Estimators
 ----------
 
 .. autosummary::
-   :toctree: generated/
-   :template: class.rst
+   :toctree: generated
 
    Calf
    CalfCV

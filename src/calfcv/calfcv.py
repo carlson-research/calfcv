@@ -17,7 +17,7 @@ except ImportError:
 
 
 class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
-    """Course approximation linear function with cross validation"""
+    """Coarse approximation linear function with cross validation"""
 
     def __init__(self, grid=(-1, 1), auc_tol=1e-6, order_col=False, verbose=False):
         self.grid = [grid] if isinstance(grid, int) else grid

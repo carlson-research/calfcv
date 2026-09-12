@@ -29,11 +29,19 @@ for a in authors_list:
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
+    "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
     "sphinx.ext.mathjax",
     "numpydoc",
     "sphinx_gallery.gen_gallery",
 ]
+
+# External documentation links
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "scikit-learn": ("https://scikit-learn.org/stable/", None),
+}
 
 autosummary_generate = True
 numpydoc_show_class_members = False
