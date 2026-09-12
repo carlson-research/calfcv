@@ -18,7 +18,6 @@ CalfCV documentation
    :maxdepth: 2
    :caption: Developer Guide
 
-   contributing
    releasing
    workflows
 
