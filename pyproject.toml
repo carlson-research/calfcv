@@ -5,16 +5,19 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "bib-ami"
+name = "calfcv"
 dynamic = ["version"]
-description = "A command-line client for bib-ami citation verification"
+description = "Coarse Approximation Linear Function (CALF) Classifier"
 readme = "README.md"
 authors = [{name = "Carlson Research, LLC"}]
 license = "MIT"
 requires-python = ">=3.11"
 dependencies = [
-    "httpx>=0.27.0",
-    "click>=8.1.0",
+    "numpy",
+    "scipy",
+    "scikit-learn",
+    "pandas",
+    "matplotlib",
 ]
 
 classifiers = [
@@ -27,38 +30,37 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/carlson-research/bib-ami-client"
-Repository = "https://github.com/carlson-research/bib-ami-client"
-Documentation = "https://carlson-research.github.io/bib-ami-client/"
-
-[project.scripts]
-bib-ami = "bib_ami.__main__:main"
+Homepage = "https://github.com/carlson-research/calfcv"
+Repository = "https://github.com/carlson-research/calfcv"
+Documentation = "https://carlson-research.github.io/calfcv/"
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",
     "pytest-cov>=4.1.0",
-    "pytest-mock>=3.14.0",
-    "pytest-httpx>=0.30.0",
     "sphinx>=7.0.0",
     "sphinx_rtd_theme>=2.0.0",
+    "sphinx-gallery",
+    "numpydoc",
+    "nbsphinx",
+    "pandoc",
     "pre-commit<3.8.0",
     "build>=1.0.0",
     "twine>=5.0.0",
 ]
 
 [tool.coverage.run]
-source = ["src/bib_ami"]
+source = ["src/calfcv"]
 omit = [
-    "src/bib_ami/__main__.py",
+    "src/calfcv/__main__.py",
 ]
 
 [tool.setuptools.dynamic]
-version = {attr = "bib_ami._version.__version__"}
+version = {attr = "calfcv._version.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["bib_ami*"]
+include = ["calfcv*"]
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
