@@ -1,9 +1,8 @@
-# Makefile for bib-ami project and Sphinx documentation
-#
+# Makefile for calfcv project and Sphinx documentation
 
 # Variables for Sphinx documentation
-SPHINXOPTS    =
-SPHINXBUILD   = sphinx-build
+SPHINXOPTS    ?=
+SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = docs
 BUILDDIR      = docs/_build
 
@@ -25,10 +24,9 @@ help:
 	@echo "  release    to stage, commit, tag, and push a release (usage: make release version=0.21.0)"
 
 clean:
-	-rm -rf $(BUILDDIR)/*
+	rm -rf $(BUILDDIR)
 
 html:
-	rm -rf $(BUILDDIR)/html/_images
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
@@ -43,7 +41,7 @@ release:
 ifndef version
 	$(error Missing version. Usage: make release version=X.Y.Z)
 endif
-	git add src/bib_ami/_version.py CHANGELOG.md
+	git add src/calfcv/_version.py docs/changelog.rst pyproject.toml
 	git commit -m "bump: release v$(version)"
 	git tag -a v$(version) -m "Release v$(version)"
 	git push origin main
