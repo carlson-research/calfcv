@@ -231,7 +231,7 @@ def fit_hv_sparse(X, y, grid, auc_tol=1e-6, order_col=False, verbose=False):
     )
 
 
-def fit_hv(X, y, grid, verbose=False):
+def fit_hv(X, y, grid, auc_tol=1e-6, order_col=False, verbose=False):
     """Find the weights that best fit dense X using points from the grid.
 
     Parameters
@@ -242,6 +242,10 @@ def fit_hv(X, y, grid, verbose=False):
         The ground truth vector.
     grid : array-like
         A list or array of candidate weights.
+    auc_tol : float, default=1e-6
+        Tolerance above max AUC for inclusion of a feature index.
+    order_col : bool, default=False
+        Whether to order the columns by individual AUC prior to fitting.
     verbose : bool, default=False
         If True, print status messages.
 
@@ -255,5 +259,5 @@ def fit_hv(X, y, grid, verbose=False):
         The list of feature indices selected.
     """
     return _fit_forward_selection(
-        X, y, grid, auc_tol=1e-6, order_col=False, verbose=verbose
+        X, y, grid, auc_tol=auc_tol, order_col=order_col, verbose=verbose
     )

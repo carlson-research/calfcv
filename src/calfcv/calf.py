@@ -156,7 +156,12 @@ class Calf(ClassifierMixin, TransformerMixin, BaseEstimator):
             )
         else:
             self.auc_, self.weights_, self.feature_index_ = fit_hv(
-                X, y, grid=self.grid, verbose=self.verbose
+                X,
+                y,
+                grid=self.grid,
+                auc_tol=self.auc_tol,
+                order_col=self.order_col,
+                verbose=self.verbose,
             )
 
         self.fit_time_ = time.time() - start
