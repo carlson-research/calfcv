@@ -21,21 +21,31 @@ class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
 
     CalfCV fits a linear model with coefficients w = (w1, ..., wp)
     to maximize the AUC of the targets predicted by the linear function.
-    It optimizes weight selection through an internal GridSearchCV pipeline.
+    It optimizes weight selection and feature inclusion thresholds through
+    an internal GridSearchCV pipeline.
 
     Parameters
     ----------
-    grid : tuple, list, or int, default=(-1, 1)
-        The search grid for weight candidates.
-    auc_tol : float, default=1e-6
-        Tolerance above max AUC for inclusion of a feature index.
-    order_col : bool, default=False
-        Whether to order the columns by individual AUC prior to fitting.
+    grid : tuple, list of tuples, or int, default=(-1, 1)
+        The candidate search grid(s) for weight candidates to optimize over.
+        Pass a list of tuples (e.g., [(-1, 1), (-1, 0, 1)]) to evaluate multiple grids.
+    auc_tol : float or list of floats, default=1e-6
+        Tolerance above max AUC for inclusion of a feature index. Pass a list
+        to evaluate multiple tolerances.
+    order_col : bool or list of bools, default=False
+        Whether to order the columns by individual AUC prior to fitting. Pass a
+        list to evaluate both options.
+    cv : int, cross-validation generator or iterable, default=None
+        Determines the cross-validation splitting strategy for GridSearchCV.
+    n_jobs : int, default=None
+        Number of jobs to run in parallel for GridSearchCV. -1 means using all processors.
     verbose : bool, default=False
         If True, print status messages.
 
     Attributes
     ----------
+    best_params_ : dict
+        Parameter setting that gave the best results on the hold out data.
     best_coef_ : list of float
         Estimated coefficients for the linear fit problem from the best model.
         Only one target should be passed, and this is a 1D list of length
@@ -77,14 +87,24 @@ class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
     0.7
     """
 
-    def __init__(self, grid=(-1, 1), auc_tol=1e-6, order_col=False, verbose=False):
-        self.grid = [grid] if isinstance(grid, int) else grid
+    def __init__(
+        self,
+        grid=(-1, 1),
+        auc_tol=1e-6,
+        order_col=False,
+        cv=None,
+        n_jobs=None,
+        verbose=False,
+    ):
+        self.grid = grid
         self.auc_tol = auc_tol
         self.order_col = order_col
+        self.cv = cv
+        self.n_jobs = n_jobs
         self.verbose = verbose
 
     def fit(self, X, y):
-        """Fit the model according to the given training data.
+        """Fit the model according to the given training data and optimize hyperparameters.
 
         Parameters
         ----------
@@ -125,10 +145,33 @@ class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
         self.X_ = X
         self.y_ = y
 
+        # Robustly unpack parameters into lists for GridSearchCV combinatorial mapping
+        if isinstance(self.grid, int):
+            valid_grids = [self.grid]
+        elif isinstance(self.grid, tuple) and all(
+            isinstance(x, int) for x in self.grid
+        ):
+            valid_grids = [self.grid]
+        elif isinstance(self.grid, (list, tuple)):
+            valid_grids = list(self.grid)
+        else:
+            valid_grids = [self.grid]
+
+        valid_auc_tols = (
+            list(self.auc_tol)
+            if isinstance(self.auc_tol, (list, tuple))
+            else [self.auc_tol]
+        )
+        valid_order_cols = (
+            list(self.order_col)
+            if isinstance(self.order_col, (list, tuple))
+            else [self.order_col]
+        )
+
         parameter_grid = {
-            "classifier__grid": [self.grid],
-            "classifier__auc_tol": [self.auc_tol],
-            "classifier__order_col": [self.order_col],
+            "classifier__grid": valid_grids,
+            "classifier__auc_tol": valid_auc_tols,
+            "classifier__order_col": valid_order_cols,
             "classifier__verbose": [self.verbose],
         }
 
@@ -140,6 +183,8 @@ class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
             estimator=Pipeline(steps=steps),
             param_grid=parameter_grid,
             scoring="roc_auc",
+            cv=self.cv,
+            n_jobs=self.n_jobs,
             verbose=self.verbose,
         )
 
@@ -147,6 +192,7 @@ class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
         self.model_.fit(X, y)
         self.fit_time_ = time.time() - start
 
+        self.best_params_ = self.model_.best_params_
         self.best_score_ = self.model_.best_score_
         self.best_coef_ = self.model_.best_estimator_["classifier"].coef_
         self.best_auc_ = self.model_.best_estimator_["classifier"].auc_
@@ -167,6 +213,7 @@ class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
             The decision vector generated by the best pipeline estimator.
         """
         check_is_fitted(self)
+        X = validate_data(self, X=X, accept_sparse=["csr", "csc", "coo"], reset=False)
         return self.model_.decision_function(X)
 
     def predict(self, X):
@@ -183,6 +230,7 @@ class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
             Vector containing the predicted class labels for each sample.
         """
         check_is_fitted(self)
+        X = validate_data(self, X=X, accept_sparse=["csr", "csc", "coo"], reset=False)
         return self.model_.predict(X)
 
     def predict_proba(self, X):
@@ -200,6 +248,7 @@ class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
             Returns the probability of the sample for each class in the model.
         """
         check_is_fitted(self)
+        X = validate_data(self, X=X, accept_sparse=["csr", "csc", "coo"], reset=False)
         return self.model_.predict_proba(X)
 
     def transform(self, X):
@@ -216,6 +265,7 @@ class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
             The input samples with only the selected features.
         """
         check_is_fitted(self)
+        X = validate_data(self, X=X, accept_sparse=["csr", "csc", "coo"], reset=False)
         return self.model_.transform(X)
 
     def fit_transform(self, X, y):
@@ -233,7 +283,8 @@ class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
         X_r : {ndarray, sparse matrix} of shape (n_samples, n_selected_features)
             The input samples with only the selected features.
         """
-        return self.fit(X, y).model_.transform(X)
+        # Delegating to self.transform natively handles the reset=False validation step
+        return self.fit(X, y).transform(X)
 
     def _more_tags(self):
         return {"poor_score": True, "non_deterministic": True, "binary_only": True}
