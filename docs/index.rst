@@ -11,6 +11,7 @@ CalfCV documentation
 
    getting_started
    user_guide
+   design_goals
    api
    auto_examples/index
 
