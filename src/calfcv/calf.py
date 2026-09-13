@@ -8,12 +8,7 @@ from sklearn.utils.multiclass import unique_labels, type_of_target
 from sklearn.utils.validation import check_is_fitted
 from ._utils import predict, fit_hv, fit_hv_sparse
 
-try:
-    from sklearn.utils.validation import validate_data
-
-    HAS_VALIDATE_DATA = True
-except ImportError:
-    HAS_VALIDATE_DATA = False
+from sklearn.utils.validation import validate_data
 
 
 class Calf(ClassifierMixin, TransformerMixin, BaseEstimator):
@@ -84,11 +79,9 @@ class Calf(ClassifierMixin, TransformerMixin, BaseEstimator):
 
     def _validate_input(self, X, reset=False):
         """Validate input data using scikit-learn utilities."""
-        if HAS_VALIDATE_DATA:
-            return validate_data(
-                self, X=X, accept_sparse=["csr", "csc", "coo"], reset=reset
-            )
-        return self._validate_data(X, accept_sparse=["csr", "csc", "coo"], reset=reset)
+        return validate_data(
+            self, X=X, accept_sparse=["csr", "csc", "coo"], reset=reset
+        )
 
     def fit(self, X, y):
         """Fit the model according to the given training data.
@@ -110,14 +103,9 @@ class Calf(ClassifierMixin, TransformerMixin, BaseEstimator):
             raise ValueError("requires y to be passed, but the target y is None")
 
         # 1. Validate data FIRST. This natively catches NaNs and raises a clean ValueError.
-        if HAS_VALIDATE_DATA:
-            X, y = validate_data(
-                self, X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True
-            )
-        else:
-            X, y = self._validate_data(
-                X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True
-            )
+        X, y = validate_data(
+            self, X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True
+        )
 
         # 2. Check target type SECOND. NaNs are already filtered out by this point.
         y_type = type_of_target(y)
