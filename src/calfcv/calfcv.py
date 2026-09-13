@@ -102,27 +102,28 @@ class CalfCV(ClassifierMixin, TransformerMixin, BaseEstimator):
         if y is None:
             raise ValueError("requires y to be passed, but the target y is None")
 
-        # Fix 1: Handle unknown object dtypes cleanly
+        # 1. Validate data FIRST so validate_data catches NaNs cleanly
+        X, y = validate_data(
+            self, X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True
+        )
+
+        # 2. Check target type SECOND
         y_type = type_of_target(y)
         if y_type == "unknown":
             raise ValueError("Unknown label type: target y must be binary.")
         if y_type != "binary":
             raise ValueError(
-                f"Only binary classification is supported. The type of the target is {y_type}."
+                f"Only binary classification is supported. The type of target is {y_type}."
             )
 
-        if HAS_VALIDATE_DATA:
-            X, y = validate_data(
-                self, X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True
+        self.classes_ = unique_labels(y)
+        if len(self.classes_) < 2:
+            raise ValueError(
+                f"This solver needs samples of at least 2 classes in the data, "
+                f"but the data contains only one class: {self.classes_[0]}"
             )
-        else:
-            X, y = self._validate_data(
-                X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True
-            )
-
         self.X_ = X
         self.y_ = y
-        self.classes_ = unique_labels(y)
 
         parameter_grid = {
             "classifier__grid": [self.grid],

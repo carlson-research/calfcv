@@ -109,15 +109,7 @@ class Calf(ClassifierMixin, TransformerMixin, BaseEstimator):
         if y is None:
             raise ValueError("requires y to be passed, but the target y is None")
 
-        # Fix 1: Handle unknown object dtypes cleanly
-        y_type = type_of_target(y)
-        if y_type == "unknown":
-            raise ValueError("Unknown label type: target y must be binary.")
-        if y_type != "binary":
-            raise ValueError(
-                f"Only binary classification is supported. The type of the target is {y_type}."
-            )
-
+        # 1. Validate data FIRST. This natively catches NaNs and raises a clean ValueError.
         if HAS_VALIDATE_DATA:
             X, y = validate_data(
                 self, X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True
@@ -127,7 +119,24 @@ class Calf(ClassifierMixin, TransformerMixin, BaseEstimator):
                 X=X, y=y, accept_sparse=["csr", "csc", "coo"], reset=True
             )
 
+        # 2. Check target type SECOND. NaNs are already filtered out by this point.
+        y_type = type_of_target(y)
+        if y_type == "unknown":
+            raise ValueError("Unknown label type: target y must be binary.")
+        if y_type != "binary":
+            raise ValueError(
+                f"Only binary classification is supported. The type of the target is {y_type}."
+            )
+
         self.classes_ = unique_labels(y)
+
+        # Catch Scikit-Learn's single-class tests
+        if len(self.classes_) < 2:
+            raise ValueError(
+                f"This solver needs samples of at least 2 classes in the data, "
+                f"but the data contains only one class: {self.classes_[0]}"
+            )
+
         self.X_ = X
         self.y_ = y
 

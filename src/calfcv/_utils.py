@@ -1,4 +1,3 @@
-import time
 import numpy as np
 from scipy.sparse import issparse
 from sklearn.metrics import roc_auc_score
@@ -28,15 +27,15 @@ def predict(X, w):
     return y_pred
 
 
-def _column_task(i, X_col, y, grid):
+def _column_task(i, V, y, grid):
     """Evaluate AUC for predicting a single column.
 
     Parameters
     ----------
     i : int
         The column index to evaluate.
-    X_col : sparse matrix of shape (n_samples, 1)
-        A single column of the training input features.
+    V : ndarray of shape (n_samples,)
+        A single 1D array column of the training input features.
     y : array-like of shape (n_samples,)
         The target vector.
     grid : array-like
@@ -51,13 +50,28 @@ def _column_task(i, X_col, y, grid):
     i : int
         The column index.
     """
-    result = []
+    best_auc = -1.0
+    best_w = None
+    classes = np.unique(y)
+
     for w in grid:
-        Z = X_col * w
-        y_score = np.nan_to_num(Z.toarray(), copy=False).ravel()
-        result.append((roc_auc_score(y_true=y, y_score=y_score), time.time(), w))
-    auc, _, w = max(result)
-    return auc, w, i
+        y_score = np.nan_to_num(V * w, copy=False)
+
+        # 1. Binary target: standard single ROC-AUC calculation
+        if len(classes) == 2:
+            auc = roc_auc_score(y_true=(y == classes[1]), y_score=y_score)
+
+        # 2. Multiclass target (e.g., Iris during sklearn estimator checks): OvR average
+        else:
+            auc = np.mean(
+                [roc_auc_score(y_true=(y == c), y_score=y_score) for c in classes]
+            )
+
+        if auc >= best_auc:
+            best_auc = auc
+            best_w = w
+
+    return best_auc, best_w, i
 
 
 def fit_columns(X, y, grid, n_jobs=-1):
@@ -65,7 +79,7 @@ def fit_columns(X, y, grid, n_jobs=-1):
 
     Parameters
     ----------
-    X : sparse matrix of shape (n_samples, n_features)
+    X : {array-like, sparse matrix} of shape (n_samples, n_features)
         The training input features and samples.
     y : array-like of shape (n_samples,)
         The target vector.
@@ -80,11 +94,109 @@ def fit_columns(X, y, grid, n_jobs=-1):
         A sorted list of tuples in descending order of AUC.
         Each tuple contains (auc, weight, column_index).
     """
-    X_csc = X.tocsc()
+    is_sp = issparse(X)
+    if is_sp:
+        X = X.tocsc()
+
+    def get_col(j):
+        return X[:, j].toarray().ravel() if is_sp else X[:, j]
+
     candidates = Parallel(n_jobs=n_jobs)(
-        delayed(_column_task)(i, X_csc[:, i], y, grid) for i in range(X.shape[1])
+        delayed(_column_task)(i, get_col(i), y, grid) for i in range(X.shape[1])
     )
     return sorted(candidates, reverse=True)
+
+
+def _fit_forward_selection(X, y, grid, auc_tol=1e-6, order_col=False, verbose=False):
+    """Unified forward selection engine for dense and sparse matrices.
+
+    Parameters
+    ----------
+    X : {array-like, sparse matrix} of shape (n_samples, n_features)
+        The training input features and samples.
+    y : array-like of shape (n_samples,)
+        The ground truth vector.
+    grid : array-like
+        A list or array of candidate weights.
+    auc_tol : float, default=1e-6
+        Tolerance above max AUC for inclusion of a feature index.
+    order_col : bool, default=False
+        Whether to order the columns by individual AUC prior to fitting.
+    verbose : bool, default=False
+        If True, print status messages.
+
+    Returns
+    -------
+    auc : list of float
+        The list of cumulative maximum AUCs at each step.
+    weights : list of float
+        The list of optimal weights corresponding to the selected features.
+    index : list of int
+        The list of feature indices selected.
+    """
+    n_samples, n_features = X.shape
+    is_sp = issparse(X)
+    if is_sp:
+        X = X.tocsc()
+
+    if order_col:
+        tups = fit_columns(X, y, grid)
+        col_order = [i for _, _, i in tups]
+    else:
+        col_order = range(n_features)
+
+    count = 0
+    weights = []
+    auc = []
+    index = []
+
+    # Safely initialize cumulative scores to exact zeros
+    U = np.zeros(n_samples)
+
+    for i in col_order:
+        V = X[:, i].toarray().ravel() if is_sp else X[:, i]
+
+        candidates = []
+        for w_idx, w in enumerate(grid):
+            Z = U + V * w
+            y_score = np.nan_to_num(Z, copy=False)
+            # Store w_idx as the explicit, deterministic tie-breaker
+            candidates.append((roc_auc_score(y_true=y, y_score=y_score), w_idx, Z, w))
+
+        # Max prioritizes highest AUC [0], then highest w_idx [1] if AUCs tie
+        best_candidate = max(candidates, key=lambda item: (item[0], item[1]))
+        max_auc, _, next_U, w_c = best_candidate
+
+        if not auc or max_auc > max(auc) + auc_tol:
+            weights.append(w_c)
+            index.append(i)
+            U = next_U
+
+            if auc and verbose:
+                print(
+                    f"Count {count} of {n_features} fit feature {i} "
+                    f"feature auc: {round(max_auc, 4)} > max auc: {round(max(auc), 4)} "
+                    f"weight: {w_c} selected features: {len(index)} auc tol: {auc_tol}"
+                )
+        else:
+            if count % 100 == 0 and verbose:
+                print(
+                    f"Count {count} of {n_features} max auc: {round(max(auc), 4)} "
+                    f"number of contributing features {len(index)}"
+                )
+
+        count += 1
+        auc.append(max_auc)
+
+        if max(auc) >= 0.999:
+            if verbose:
+                print(
+                    f"found {len(index)} features that contribute positive auc.\n"
+                    "auc threshold reached, breaking ..."
+                )
+            break
+
+    return auc, weights, index
 
 
 def fit_hv_sparse(X, y, grid, auc_tol=1e-6, order_col=False, verbose=False):
@@ -114,59 +226,9 @@ def fit_hv_sparse(X, y, grid, auc_tol=1e-6, order_col=False, verbose=False):
     index : list of int
         The list of feature indices selected.
     """
-    X_csc = X.tocsc()
-    if order_col:
-        tups = fit_columns(X_csc, y, grid)
-        col_order = [i for _, _, i in tups]
-    else:
-        col_order = range(X.shape[1])
-
-    count = 0
-    weights = []
-    auc = []
-    index = []
-    U = X_csc[:, 0] * 0
-
-    for i in col_order:
-        V = X_csc[:, i]
-        candidates = []
-        for w in grid:
-            Z = U + V * w
-            y_score = np.nan_to_num(Z.toarray().ravel())
-            candidates.append(
-                (roc_auc_score(y_true=y, y_score=y_score), time.time(), Z, w)
-            )
-        max_auc, _, U, w_c = max(candidates)
-
-        if not auc or max_auc > max(auc) + auc_tol:
-            weights.append(w_c)
-            index.append(i)
-
-            if auc and verbose:
-                print(
-                    f"Count {count} of {X.shape[1]} fit feature {i} "
-                    f"feature auc: {round(max_auc, 4)} > max auc: {round(max(auc), 4)} "
-                    f"weight: {w_c} selected features: {len(index)} auc tol: {auc_tol}"
-                )
-        else:
-            if count % 100 == 0 and verbose:
-                print(
-                    f"Count {count} of {X.shape[1]} max auc: {round(max(auc), 4)} "
-                    f"number of contributing features {len(index)}"
-                )
-
-        count += 1
-        auc.append(max_auc)
-
-        if max(auc) >= 0.999:
-            if verbose:
-                print(
-                    f"found {len(index)} features that contribute positive auc.\n"
-                    "auc threshold reached, breaking ..."
-                )
-            break
-
-    return auc, weights, index
+    return _fit_forward_selection(
+        X, y, grid, auc_tol=auc_tol, order_col=order_col, verbose=verbose
+    )
 
 
 def fit_hv(X, y, grid, verbose=False):
@@ -192,47 +254,6 @@ def fit_hv(X, y, grid, verbose=False):
     index : list of int
         The list of feature indices selected.
     """
-    weights = []
-    auc = []
-    index = []
-    U = np.empty((X.shape[0]))
-
-    for i in range(X.shape[1]):
-        V = X[:, i]
-        candidates = []
-        for w in grid:
-            y_score = np.nan_to_num(U + V * w)
-            candidates.append(
-                (roc_auc_score(y_true=y, y_score=y_score), time.time(), y_score, w)
-            )
-        max_auc, _, U, w_c = sorted(candidates, reverse=True)[0]
-
-        if not auc or max_auc > max(auc):
-            weights.append(w_c)
-            index.append(i)
-
-        auc.append(max_auc)
-
-        if verbose:
-            if max_auc > max(auc):
-                print(
-                    f"fit feature {i} of {X.shape[1]} feature auc: {round(max_auc, 4)} "
-                    f"> max auc: {round(max(auc), 4)} weight: {w_c} "
-                    f"number of contributing features {len(index)}"
-                )
-            else:
-                print(
-                    f"fit feature {i} of {X.shape[1]} feature auc: {round(max_auc, 4)} "
-                    f"<= max auc: {round(max(auc), 4)} weight: 0 "
-                    f"number of contributing features {len(index)}"
-                )
-
-        if max(auc) >= 0.999:
-            if verbose:
-                print(
-                    f"found {len(index)} features that contribute positive auc.\n"
-                    "auc threshold reached, breaking ..."
-                )
-            break
-
-    return auc, weights, index
+    return _fit_forward_selection(
+        X, y, grid, auc_tol=1e-6, order_col=False, verbose=verbose
+    )
