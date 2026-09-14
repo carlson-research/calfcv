@@ -60,7 +60,6 @@ pytest.ini
 # Sphinx documentation
 docs/_build/
 docs/generated/
-docs/auto_examples/
 docs/jupyter_execute/
 .doctrees/
 docs/sg_execution_times.rst

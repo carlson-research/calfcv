@@ -178,6 +178,10 @@ def _fit_forward_selection(X, y, grid, auc_tol=1e-6, order_col=False, verbose=Fa
                     f"feature auc: {round(max_auc, 4)} > max auc: {round(max(auc), 4)} "
                     f"weight: {w_c} selected features: {len(index)} auc tol: {auc_tol}"
                 )
+
+            # FIX: Only append the AUC if the feature was actually accepted
+            auc.append(max_auc)
+
         else:
             if count % 100 == 0 and verbose:
                 print(
@@ -186,9 +190,9 @@ def _fit_forward_selection(X, y, grid, auc_tol=1e-6, order_col=False, verbose=Fa
                 )
 
         count += 1
-        auc.append(max_auc)
 
-        if max(auc) >= 0.999:
+        # FIX: Ensure we only check for 0.999 termination if auc is not empty
+        if auc and max(auc) >= 0.999:
             if verbose:
                 print(
                     f"found {len(index)} features that contribute positive auc.\n"
