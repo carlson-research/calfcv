@@ -10,25 +10,52 @@ high-dimensional, sparse feature matrix produced by Scikit-Learn's ``TfidfVector
 Notably, ``Calf`` successfully handles IMDB sentiment classification using a
 50,000 x 101,895 feature matrix with stable memory use, achieving a ROC-AUC
 of ~0.94 for predicting sentiment.
-
-*Note: This script requires the Stanford IMDB dataset to be downloaded and
-extracted locally to `/srv/imdb/`.*
 """
 
 # %%
 # Imports and Data Loading
 # ------------------------
+import tarfile
 from collections import Counter
+from pathlib import Path
+from urllib.request import urlretrieve
+
 import numpy as np
 from sklearn.datasets import load_files
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score
+from sklearn.model_selection import train_test_split
+
 from calfcv import Calf
 
-# Load the Stanford IMDB sentiment dataset
-im_train = load_files("/srv/imdb/train/", shuffle=False)
-im_test = load_files("/srv/imdb/test/", shuffle=False)
+
+def fetch_imdb():
+    """Fetch and unpack the IMDb movie review dataset automatically."""
+    data_dir = Path.home() / "scikit_learn_data" / "imdb"
+    train_dir = data_dir / "aclImdb" / "train"
+    test_dir = data_dir / "aclImdb" / "test"
+
+    if not train_dir.exists():
+        data_dir.mkdir(parents=True, exist_ok=True)
+        archive_path = data_dir / "aclImdb_v1.tar.gz"
+        url = "https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz"
+
+        print("Downloading IMDb dataset to local cache...")
+        urlretrieve(url, archive_path)
+
+        print("Extracting dataset...")
+        with tarfile.open(archive_path, "r:gz") as tar:
+            tar.extractall(path=data_dir)
+
+    return str(train_dir), str(test_dir)
+
+
+# Load the Stanford IMDB sentiment dataset automatically
+imdb_train_path, imdb_test_path = fetch_imdb()
+
+print("Loading files into memory...")
+im_train = load_files(imdb_train_path, shuffle=False)
+im_test = load_files(imdb_test_path, shuffle=False)
 
 corpus = im_train.data + im_test.data
 y_all = list(im_train.target) + list(im_test.target)
@@ -39,8 +66,8 @@ print("Initial Class Distribution:", Counter(y_all))
 # %%
 # Data Preprocessing
 # ------------------
-# Class 2 is neutral sentiment. We filter the dataset to strictly contain
-# positive (1) and negative (0) sentiment classes.
+# Class 2 is neutral/unsupervised sentiment. We filter the dataset to strictly
+# contain positive (1) and negative (0) sentiment classes.
 index = [i for i in range(len(y_all)) if y_all[i] in [0, 1]]
 y = np.array(y_all)[index]
 X_uv = np.array(corpus)[index]

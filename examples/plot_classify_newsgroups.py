@@ -23,7 +23,6 @@ from sklearn.datasets import fetch_20newsgroups
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import (
-    PassiveAggressiveClassifier,
     Perceptron,
     RidgeClassifier,
     SGDClassifier,
@@ -44,7 +43,7 @@ categories = [
     "sci.space",
 ]
 
-print("Loading 20 newsgroups dataset...")
+print("Loading 20 newsgroups dataset (cached locally)...")
 data_train = fetch_20newsgroups(
     subset="train", categories=categories, shuffle=True, random_state=42
 )
@@ -99,7 +98,13 @@ results.append(
 # Standard Baselines
 results.append(benchmark(RidgeClassifier(tol=1e-2, solver="lsqr"), "Ridge"))
 results.append(benchmark(Perceptron(), "Perceptron"))
-results.append(benchmark(PassiveAggressiveClassifier(), "Passive-Aggressive"))
+# Using SGD configuration to replace deprecated PassiveAggressiveClassifier
+results.append(
+    benchmark(
+        SGDClassifier(loss="hinge", penalty=None, learning_rate="pa1", eta0=1.0),
+        "Passive-Aggressive",
+    )
+)
 results.append(benchmark(KNeighborsClassifier(n_neighbors=10), "kNN"))
 results.append(benchmark(RandomForestClassifier(n_estimators=100), "Random Forest"))
 results.append(benchmark(LinearSVC(penalty="l2", dual=False, tol=1e-3), "L2 LinearSVC"))
@@ -132,7 +137,10 @@ ax.barh(
 
 ax.set_yticks(indices + 0.25)
 ax.set_yticklabels(clf_names)
-ax.legend(loc="lower right")
+ax.invert_yaxis()  # Put Calf OVR at the top of the chart
+
+# Place legend outside the plot area below the chart
+ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.1), ncol=3)
 ax.grid(True, linestyle="--", alpha=0.5)
 
 plt.tight_layout()
