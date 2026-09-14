@@ -37,13 +37,13 @@ from sklearn.preprocessing import StandardScaler
 from calfcv import Calf, CalfCV
 
 X, y = make_classification(
-    n_samples=250,
-    n_features=50,
-    n_informative=7,
-    n_redundant=3,
+    n_samples=1000,
+    n_features=200,
+    n_informative=20,
+    n_redundant=10,
     n_classes=2,
-    shuffle=False,  # Columns 0..9 are signal, 10..49 are pure noise (40 columns)
-    random_state=11,
+    shuffle=False,  # Columns 0..29 are signal; 30..199 are pure noise (170 columns)
+    random_state=42,
 )
 
 # %%
@@ -108,7 +108,7 @@ ax1.boxplot(auc_scores, tick_labels=model_names, patch_artist=True)
 ax1.set_ylabel("ROC-AUC Score")
 ax1.set_title("Cross-Validated ROC-AUC")
 ax1.grid(True, linestyle="--", alpha=0.5)
-ax1.set_ylim(0.65, 1.00)
+ax1.set_ylim(0.70, 1.00)
 
 for i, scores in enumerate(auc_scores):
     mean_val, std_val = np.mean(scores), np.std(scores)
@@ -131,7 +131,7 @@ ax2.boxplot(acc_scores, tick_labels=model_names, patch_artist=True)
 ax2.set_ylabel("Accuracy Score")
 ax2.set_title("Cross-Validated Accuracy")
 ax2.grid(True, linestyle="--", alpha=0.5)
-ax1.set_ylim(0.65, 1.00)
+ax1.set_ylim(70, 1.00)
 
 for i, scores in enumerate(acc_scores):
     mean_val, std_val = np.mean(scores), np.std(scores)

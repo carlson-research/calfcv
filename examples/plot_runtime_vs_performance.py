@@ -27,16 +27,13 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from calfcv import Calf, CalfCV
 
-# Generate a synthetic dataset (scaled to n_samples=250, n_features=50 for fast CI/local runs):
-# Features 0..29: Signal (20 informative, 10 redundant)
-# Features 30..49: Pure noise (20 columns)
 X, y = make_classification(
-    n_samples=250,
-    n_features=50,
+    n_samples=1000,
+    n_features=200,
     n_informative=20,
     n_redundant=10,
     n_classes=2,
-    shuffle=False,
+    shuffle=False,  # Columns 0..29 are signal; 30..199 are pure noise (170 columns)
     random_state=42,
 )
 
