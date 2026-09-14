@@ -278,12 +278,12 @@ Summary Table
     RUNTIME VS. PERFORMANCE SUMMARY
     ================================================================================
                           Pipeline  Mean Fit Time (s)  Mean ROC-AUC  Mean Accuracy  Avg Selected Features (k)
-           Baseline (No Selection)           0.021852      0.816556          0.736                      200.0
-                   CALF (Unsorted)           1.116244      0.875778          0.792                       16.2
-                 CALF (Pre-Sorted)           1.349407      0.854077          0.773                       12.2
-         CalfCV (Auto Grid Search)           6.755698      0.854697          0.776                       10.8
-          SelectKBest (ANOVA k=15)           0.008838      0.875577          0.798                       15.0
-    RFE (Logistic Regression k=15)           2.190927      0.880137          0.796                       15.0
+           Baseline (No Selection)           0.022044      0.816556          0.736                      200.0
+                   CALF (Unsorted)           1.161765      0.875778          0.792                       16.2
+                 CALF (Pre-Sorted)           1.308909      0.854077          0.773                       12.2
+         CalfCV (Auto Grid Search)           6.727295      0.854697          0.776                       10.8
+          SelectKBest (ANOVA k=15)           0.008689      0.875577          0.798                       15.0
+    RFE (Logistic Regression k=15)           2.179428      0.880137          0.796                       15.0
 
 
 
@@ -304,7 +304,7 @@ Trade-off Analysis
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 57.969 seconds)
+   **Total running time of the script:** (0 minutes 57.792 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_runtime_vs_performance.py:

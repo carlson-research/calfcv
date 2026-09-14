@@ -79,23 +79,6 @@ Gallery Highlights
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Predict positive and negative sentiment on the IMDB database using Calf.">
-
-.. only:: html
-
-  .. image:: /auto_examples/images/thumb/sphx_glr_plot_sentiment_imdb_thumb.png
-    :alt:
-
-  :doc:`/auto_examples/plot_sentiment_imdb`
-
-.. raw:: html
-
-      <div class="sphx-glr-thumbnail-title">Sentiment Analysis of High-Dimensional IMDB Reviews</div>
-    </div>
-
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how Calf performs multi-class text classification using a One-vs-Rest strategy (~sklearn.multiclass.OneVsRestClassifier).">
 
 .. only:: html
@@ -125,6 +108,23 @@ Gallery Highlights
 .. raw:: html
 
       <div class="sphx-glr-thumbnail-title">Feature Selection Sparsity: CALF vs. L1 & RFE</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Predict positive and negative sentiment on the IMDB database using Calf.">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_plot_sentiment_imdb_thumb.png
+    :alt:
+
+  :doc:`/auto_examples/plot_sentiment_imdb`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Sentiment Analysis of High-Dimensional IMDB Reviews</div>
     </div>
 
 
@@ -174,9 +174,9 @@ Gallery Highlights
 
    /auto_examples/plot_decision_thresholds
    /auto_examples/plot_cumulative_auc_by_feature
-   /auto_examples/plot_sentiment_imdb
    /auto_examples/plot_classify_newsgroups
    /auto_examples/plot_feature_selection_breast_cancer
+   /auto_examples/plot_sentiment_imdb
    /auto_examples/plot_runtime_vs_performance
    /auto_examples/plot_algorithm_leverage
 

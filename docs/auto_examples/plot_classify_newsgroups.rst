@@ -179,31 +179,31 @@ Evaluate Classifiers
 
     ================================================================================
     Training: Calf OVR
-    Train Time: 69.700s | Test Time: 0.013s | Accuracy: 0.823
+    Train Time: 69.771s | Test Time: 0.011s | Accuracy: 0.823
     ================================================================================
     Training: Ridge
-    Train Time: 0.131s | Test Time: 0.003s | Accuracy: 0.899
+    Train Time: 0.082s | Test Time: 0.003s | Accuracy: 0.899
     ================================================================================
     Training: Perceptron
-    Train Time: 0.124s | Test Time: 0.003s | Accuracy: 0.888
+    Train Time: 0.118s | Test Time: 0.002s | Accuracy: 0.888
     ================================================================================
     Training: Passive-Aggressive
-    Train Time: 0.045s | Test Time: 0.003s | Accuracy: 0.907
+    Train Time: 0.048s | Test Time: 0.002s | Accuracy: 0.902
     ================================================================================
     Training: kNN
     Train Time: 0.002s | Test Time: 0.099s | Accuracy: 0.858
     ================================================================================
     Training: Random Forest
-    Train Time: 2.583s | Test Time: 0.126s | Accuracy: 0.837
+    Train Time: 2.644s | Test Time: 0.116s | Accuracy: 0.842
     ================================================================================
     Training: L2 LinearSVC
-    Train Time: 0.206s | Test Time: 0.004s | Accuracy: 0.900
+    Train Time: 0.169s | Test Time: 0.002s | Accuracy: 0.900
     ================================================================================
     Training: L1 SGD
-    Train Time: 0.176s | Test Time: 0.003s | Accuracy: 0.885
+    Train Time: 0.189s | Test Time: 0.003s | Accuracy: 0.890
     ================================================================================
     Training: Multinomial NB
-    Train Time: 0.009s | Test Time: 0.002s | Accuracy: 0.899
+    Train Time: 0.008s | Test Time: 0.002s | Accuracy: 0.899
 
 
 
@@ -263,7 +263,7 @@ Visualize Performance Comparison
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 14.718 seconds)
+   **Total running time of the script:** (1 minutes 14.688 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_classify_newsgroups.py:

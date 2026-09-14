@@ -131,7 +131,7 @@ ax2.boxplot(acc_scores, tick_labels=model_names, patch_artist=True)
 ax2.set_ylabel("Accuracy Score")
 ax2.set_title("Cross-Validated Accuracy")
 ax2.grid(True, linestyle="--", alpha=0.5)
-ax1.set_ylim(70, 1.00)
+ax1.set_ylim(0.70, 1.00)
 
 for i, scores in enumerate(acc_scores):
     mean_val, std_val = np.mean(scores), np.std(scores)

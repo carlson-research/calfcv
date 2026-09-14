@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**64:43.899** total execution time for 7 files **from auto_examples**:
+**63:47.629** total execution time for 7 files **from auto_examples**:
 
 .. container::
 
@@ -33,12 +33,12 @@ Computation times
      - Time
      - Mem (MB)
    * - :ref:`sphx_glr_auto_examples_plot_sentiment_imdb.py` (``plot_sentiment_imdb.py``)
-     - 63:29.181
-     - 0.0
-   * - :ref:`sphx_glr_auto_examples_plot_classify_newsgroups.py` (``plot_classify_newsgroups.py``)
-     - 01:14.718
+     - 63:47.629
      - 0.0
    * - :ref:`sphx_glr_auto_examples_plot_algorithm_leverage.py` (``plot_algorithm_leverage.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr_auto_examples_plot_classify_newsgroups.py` (``plot_classify_newsgroups.py``)
      - 00:00.000
      - 0.0
    * - :ref:`sphx_glr_auto_examples_plot_cumulative_auc_by_feature.py` (``plot_cumulative_auc_by_feature.py``)

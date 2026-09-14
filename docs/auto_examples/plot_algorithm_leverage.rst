@@ -194,7 +194,7 @@ Visualize Performance Comparison across CV Folds
     ax2.set_ylabel("Accuracy Score")
     ax2.set_title("Cross-Validated Accuracy")
     ax2.grid(True, linestyle="--", alpha=0.5)
-    ax1.set_ylim(70, 1.00)
+    ax1.set_ylim(0.70, 1.00)
 
     for i, scores in enumerate(acc_scores):
         mean_val, std_val = np.mean(scores), np.std(scores)
@@ -339,7 +339,7 @@ Key Trade-off Interpretation
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 56.524 seconds)
+   **Total running time of the script:** (0 minutes 56.067 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_algorithm_leverage.py:

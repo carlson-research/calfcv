@@ -20,6 +20,7 @@ from collections import Counter
 from pathlib import Path
 from urllib.request import urlretrieve
 
+import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.datasets import load_files
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -138,3 +139,46 @@ y_pred_proba = clf_full.predict_proba(X_test)[:, 1]
 final_auc = roc_auc_score(y_test, y_pred_proba)
 
 print(f"\nFinal Test ROC-AUC (Probabilities): {final_auc:.4f}")
+
+# %%
+# Visualizing Benchmark Results
+# -----------------------------
+# The following plot illustrates how CALF's performance scales with dataset size,
+# moving from severe overfitting on the small subset to strong generalization
+# on the full corpus.
+
+# Calculate training AUC for the full model to complete the grouped bar chart
+y_pred_proba_train = clf_full.predict_proba(X_train)[:, 1]
+auc_train_full = roc_auc_score(y_train, y_pred_proba_train)
+
+labels = ['Small Dataset\n(N=400)', 'Full Dataset\n(N=50,000)']
+train_scores = [auc_train_small, auc_train_full]
+test_scores = [auc_test_small, final_auc]
+
+x = np.arange(len(labels))
+width = 0.35
+
+fig, ax = plt.subplots(figsize=(8, 5))
+rects1 = ax.bar(x - width/2, train_scores, width, label='Train ROC-AUC', color='#4cc9f0')
+rects2 = ax.bar(x + width/2, test_scores, width, label='Test ROC-AUC', color='#7209b7')
+
+ax.set_ylabel('ROC-AUC Score')
+ax.set_title('CALF Generalization: Scaling with IMDb Dataset Size')
+ax.set_xticks(x)
+ax.set_xticklabels(labels)
+ax.axhline(0.5, color="gray", linestyle="--", alpha=0.7, label="Random Guessing")
+ax.set_ylim(0.4, 1.1)
+ax.legend(loc="upper left")
+
+# Add precise value annotations on top of the bars
+for rects in [rects1, rects2]:
+    for rect in rects:
+        height = rect.get_height()
+        ax.annotate(f'{height:.3f}',
+                    xy=(rect.get_x() + rect.get_width() / 2, height),
+                    xytext=(0, 3),  # 3 points vertical offset
+                    textcoords="offset points",
+                    ha='center', va='bottom', fontweight='bold')
+
+plt.tight_layout()
+plt.show()

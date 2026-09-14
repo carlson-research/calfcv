@@ -787,7 +787,7 @@ Imports and Model Fitting
                     <summary>Parameters</summary>
                     <table class="parameters-table">
                       <tbody>
-
+                    
             <tr class="user-set">
                 <td><button type="button" class="copy-paste-icon"
                      aria-label="Copy grid to clipboard"
@@ -797,7 +797,7 @@ Imports and Model Fitting
                 <td class="param">grid</td>
                 <td class="value">[(-1, ...), (-1, ...)]</td>
             </tr>
-
+    
 
             <tr class="user-set">
                 <td><button type="button" class="copy-paste-icon"
@@ -808,7 +808,7 @@ Imports and Model Fitting
                 <td class="param">auc_tol</td>
                 <td class="value">[0.0001, 0.001, ...]</td>
             </tr>
-
+    
 
             <tr class="user-set">
                 <td><button type="button" class="copy-paste-icon"
@@ -819,7 +819,7 @@ Imports and Model Fitting
                 <td class="param">order_col</td>
                 <td class="value">[True, False]</td>
             </tr>
-
+    
 
             <tr class="user-set">
                 <td><button type="button" class="copy-paste-icon"
@@ -830,7 +830,7 @@ Imports and Model Fitting
                 <td class="param">cv</td>
                 <td class="value">5</td>
             </tr>
-
+    
 
             <tr class="user-set">
                 <td><button type="button" class="copy-paste-icon"
@@ -841,7 +841,7 @@ Imports and Model Fitting
                 <td class="param">n_jobs</td>
                 <td class="value">-1</td>
             </tr>
-
+    
 
             <tr class="default">
                 <td><button type="button" class="copy-paste-icon"
@@ -852,12 +852,12 @@ Imports and Model Fitting
                 <td class="param">verbose</td>
                 <td class="value">False</td>
             </tr>
-
+    
                       </tbody>
                     </table>
                 </details>
             </div>
-
+    
             <div class="estimator-table">
                 <details>
                     <summary>Fitted attributes</summary>
@@ -868,7 +868,7 @@ Imports and Model Fitting
                             <th>Type</th>
                             <th>Value</th>
                             </tr>
-
+                        
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">X_</a></td>
                <td class="fitted-att-type">ndarray[float64](398, 30)</td>
@@ -882,7 +882,7 @@ Imports and Model Fitting
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">best_auc_</a></td>
@@ -891,7 +891,7 @@ Imports and Model Fitting
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">best_coef_</a></td>
@@ -900,7 +900,7 @@ Imports and Model Fitting
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">best_params_</a></td>
@@ -909,7 +909,7 @@ Imports and Model Fitting
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">best_score_</a></td>
@@ -918,7 +918,7 @@ Imports and Model Fitting
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">classes_</a></td>
@@ -927,7 +927,7 @@ Imports and Model Fitting
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">feature_names_in_</a></td>
@@ -937,16 +937,16 @@ Imports and Model Fitting
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">fit_time_</a></td>
                <td class="fitted-att-type">float</td>
-               <td>3.045</td>
+               <td>3.122</td>
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">model_</a></td>
@@ -955,7 +955,7 @@ Imports and Model Fitting
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">n_features_in_</a></td>
@@ -964,7 +964,7 @@ Imports and Model Fitting
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">y_</a></td>
@@ -973,7 +973,7 @@ Imports and Model Fitting
 
 
            </tr>
-
+    
                         </tbody>
                     </table>
                 </details>
@@ -1318,7 +1318,7 @@ Step-by-Step Selection Summary
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 3.411 seconds)
+   **Total running time of the script:** (0 minutes 3.455 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_cumulative_auc_by_feature.py:

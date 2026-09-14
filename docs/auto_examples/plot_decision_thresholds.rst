@@ -807,7 +807,7 @@ Fit CalfCV Estimator via Automated Grid Search
                     <summary>Parameters</summary>
                     <table class="parameters-table">
                       <tbody>
-
+                    
             <tr class="user-set">
                 <td><button type="button" class="copy-paste-icon"
                      aria-label="Copy grid to clipboard"
@@ -817,7 +817,7 @@ Fit CalfCV Estimator via Automated Grid Search
                 <td class="param">grid</td>
                 <td class="value">[(-1, ...), (-1, ...)]</td>
             </tr>
-
+    
 
             <tr class="user-set">
                 <td><button type="button" class="copy-paste-icon"
@@ -828,7 +828,7 @@ Fit CalfCV Estimator via Automated Grid Search
                 <td class="param">auc_tol</td>
                 <td class="value">[0.001, 0.01]</td>
             </tr>
-
+    
 
             <tr class="user-set">
                 <td><button type="button" class="copy-paste-icon"
@@ -839,7 +839,7 @@ Fit CalfCV Estimator via Automated Grid Search
                 <td class="param">order_col</td>
                 <td class="value">[True, False]</td>
             </tr>
-
+    
 
             <tr class="user-set">
                 <td><button type="button" class="copy-paste-icon"
@@ -850,7 +850,7 @@ Fit CalfCV Estimator via Automated Grid Search
                 <td class="param">cv</td>
                 <td class="value">3</td>
             </tr>
-
+    
 
             <tr class="user-set">
                 <td><button type="button" class="copy-paste-icon"
@@ -861,7 +861,7 @@ Fit CalfCV Estimator via Automated Grid Search
                 <td class="param">n_jobs</td>
                 <td class="value">-1</td>
             </tr>
-
+    
 
             <tr class="default">
                 <td><button type="button" class="copy-paste-icon"
@@ -872,12 +872,12 @@ Fit CalfCV Estimator via Automated Grid Search
                 <td class="param">verbose</td>
                 <td class="value">False</td>
             </tr>
-
+    
                       </tbody>
                     </table>
                 </details>
             </div>
-
+    
             <div class="estimator-table">
                 <details>
                     <summary>Fitted attributes</summary>
@@ -888,7 +888,7 @@ Fit CalfCV Estimator via Automated Grid Search
                             <th>Type</th>
                             <th>Value</th>
                             </tr>
-
+                        
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">X_</a></td>
                <td class="fitted-att-type">ndarray[float64](175, 50)</td>
@@ -902,7 +902,7 @@ Fit CalfCV Estimator via Automated Grid Search
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">best_auc_</a></td>
@@ -911,7 +911,7 @@ Fit CalfCV Estimator via Automated Grid Search
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">best_coef_</a></td>
@@ -920,7 +920,7 @@ Fit CalfCV Estimator via Automated Grid Search
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">best_params_</a></td>
@@ -929,7 +929,7 @@ Fit CalfCV Estimator via Automated Grid Search
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">best_score_</a></td>
@@ -938,7 +938,7 @@ Fit CalfCV Estimator via Automated Grid Search
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">classes_</a></td>
@@ -947,16 +947,16 @@ Fit CalfCV Estimator via Automated Grid Search
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">fit_time_</a></td>
                <td class="fitted-att-type">float</td>
-               <td>3.511</td>
+               <td>3.855</td>
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">model_</a></td>
@@ -965,7 +965,7 @@ Fit CalfCV Estimator via Automated Grid Search
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">n_features_in_</a></td>
@@ -974,7 +974,7 @@ Fit CalfCV Estimator via Automated Grid Search
 
 
            </tr>
-
+    
 
            <tr class="default">
                <td class="param"><a class="param-doc-link" style="text-decoration:none;">y_</a></td>
@@ -983,7 +983,7 @@ Fit CalfCV Estimator via Automated Grid Search
 
 
            </tr>
-
+    
                         </tbody>
                     </table>
                 </details>
@@ -1298,7 +1298,7 @@ Threshold Calibration Analysis
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 3.790 seconds)
+   **Total running time of the script:** (0 minutes 5.433 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_decision_thresholds.py:

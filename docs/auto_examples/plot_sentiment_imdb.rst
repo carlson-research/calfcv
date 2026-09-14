@@ -35,7 +35,7 @@ of ~0.94 for predicting sentiment.
 Imports and Data Loading
 ------------------------
 
-.. GENERATED FROM PYTHON SOURCE LINES 18-66
+.. GENERATED FROM PYTHON SOURCE LINES 18-67
 
 .. code-block:: Python
 
@@ -44,6 +44,7 @@ Imports and Data Loading
     from pathlib import Path
     from urllib.request import urlretrieve
 
+    import matplotlib.pyplot as plt
     import numpy as np
     from sklearn.datasets import load_files
     from sklearn.feature_extraction.text import TfidfVectorizer
@@ -101,14 +102,14 @@ Imports and Data Loading
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 67-71
+.. GENERATED FROM PYTHON SOURCE LINES 68-72
 
 Data Preprocessing
 ------------------
 Class 2 is neutral/unsupervised sentiment. We filter the dataset to strictly
 contain positive (1) and negative (0) sentiment classes.
 
-.. GENERATED FROM PYTHON SOURCE LINES 71-82
+.. GENERATED FROM PYTHON SOURCE LINES 72-83
 
 .. code-block:: Python
 
@@ -139,7 +140,7 @@ contain positive (1) and negative (0) sentiment classes.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 83-88
+.. GENERATED FROM PYTHON SOURCE LINES 84-89
 
 Benchmark 1: Predicting Sentiment on a Small Dataset
 ----------------------------------------------------
@@ -147,7 +148,7 @@ For this small example, we select 400 movie reviews out of 50,000. Even with
 the limited number of samples, the bag-of-words model expands the number of
 feature columns to nearly 10,000.
 
-.. GENERATED FROM PYTHON SOURCE LINES 88-107
+.. GENERATED FROM PYTHON SOURCE LINES 89-108
 
 .. code-block:: Python
 
@@ -186,7 +187,7 @@ feature columns to nearly 10,000.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 108-114
+.. GENERATED FROM PYTHON SOURCE LINES 109-115
 
 Interpretation of Small Benchmark
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -195,14 +196,14 @@ but demonstrates poor skill at predicting sentiment on the unseen testing data.
 As expected, the algorithm requires more examples to generalize across such a
 massive feature space.
 
-.. GENERATED FROM PYTHON SOURCE LINES 116-120
+.. GENERATED FROM PYTHON SOURCE LINES 117-121
 
 Benchmark 2: Predicting Sentiment on the Full Dataset
 -----------------------------------------------------
 We now split the full dataset (80% train, 20% test) to provide ``Calf`` with
 enough samples to find meaningful signal in the 100,000+ features.
 
-.. GENERATED FROM PYTHON SOURCE LINES 120-132
+.. GENERATED FROM PYTHON SOURCE LINES 121-133
 
 .. code-block:: Python
 
@@ -236,14 +237,14 @@ enough samples to find meaningful signal in the 100,000+ features.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 133-137
+.. GENERATED FROM PYTHON SOURCE LINES 134-138
 
 Evaluate the Full Model
 -----------------------
 With sufficient training data, ``Calf`` successfully isolates the sparse,
 informative vocabulary needed to accurately predict sentiment on unseen data.
 
-.. GENERATED FROM PYTHON SOURCE LINES 137-141
+.. GENERATED FROM PYTHON SOURCE LINES 138-143
 
 .. code-block:: Python
 
@@ -251,6 +252,7 @@ informative vocabulary needed to accurately predict sentiment on unseen data.
     final_auc = roc_auc_score(y_test, y_pred_proba)
 
     print(f"\nFinal Test ROC-AUC (Probabilities): {final_auc:.4f}")
+
 
 
 
@@ -265,10 +267,69 @@ informative vocabulary needed to accurately predict sentiment on unseen data.
 
 
 
+.. GENERATED FROM PYTHON SOURCE LINES 144-149
+
+Visualizing Benchmark Results
+-----------------------------
+The following plot illustrates how CALF's performance scales with dataset size,
+moving from severe overfitting on the small subset to strong generalization
+on the full corpus.
+
+.. GENERATED FROM PYTHON SOURCE LINES 149-184
+
+.. code-block:: Python
+
+
+    # Calculate training AUC for the full model to complete the grouped bar chart
+    y_pred_proba_train = clf_full.predict_proba(X_train)[:, 1]
+    auc_train_full = roc_auc_score(y_train, y_pred_proba_train)
+
+    labels = ['Small Dataset\n(N=400)', 'Full Dataset\n(N=50,000)']
+    train_scores = [auc_train_small, auc_train_full]
+    test_scores = [auc_test_small, final_auc]
+
+    x = np.arange(len(labels))
+    width = 0.35
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    rects1 = ax.bar(x - width/2, train_scores, width, label='Train ROC-AUC', color='#4cc9f0')
+    rects2 = ax.bar(x + width/2, test_scores, width, label='Test ROC-AUC', color='#7209b7')
+
+    ax.set_ylabel('ROC-AUC Score')
+    ax.set_title('CALF Generalization: Scaling with IMDb Dataset Size')
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels)
+    ax.axhline(0.5, color="gray", linestyle="--", alpha=0.7, label="Random Guessing")
+    ax.set_ylim(0.4, 1.1)
+    ax.legend(loc="upper left")
+
+    # Add precise value annotations on top of the bars
+    for rects in [rects1, rects2]:
+        for rect in rects:
+            height = rect.get_height()
+            ax.annotate(f'{height:.3f}',
+                        xy=(rect.get_x() + rect.get_width() / 2, height),
+                        xytext=(0, 3),  # 3 points vertical offset
+                        textcoords="offset points",
+                        ha='center', va='bottom', fontweight='bold')
+
+    plt.tight_layout()
+    plt.show()
+
+
+.. image-sg:: /auto_examples/images/sphx_glr_plot_sentiment_imdb_001.png
+   :alt: CALF Generalization: Scaling with IMDb Dataset Size
+   :srcset: /auto_examples/images/sphx_glr_plot_sentiment_imdb_001.png
+   :class: sphx-glr-single-img
+
+
+
+
+
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (63 minutes 29.181 seconds)
+   **Total running time of the script:** (63 minutes 47.629 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_sentiment_imdb.py:

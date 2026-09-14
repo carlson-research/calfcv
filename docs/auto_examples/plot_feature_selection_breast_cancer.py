@@ -178,7 +178,7 @@ for name, pipe in pipelines.items():
 
 # %%
 # Interpretation: Clinical Transparency via Coarse Weighting
-# --------------------------------------------------------
+# ----------------------------------------------------------
 # The output above illustrates the fundamental trade-off between continuous
 # mathematical optimization and clinical interpretability.
 #
