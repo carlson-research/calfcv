@@ -6,9 +6,9 @@ from sklearn.base import BaseEstimator, ClassifierMixin, TransformerMixin
 from sklearn.preprocessing import minmax_scale
 from sklearn.utils.multiclass import unique_labels, type_of_target
 from sklearn.utils.validation import check_is_fitted
-from ._utils import predict, fit_hv, fit_hv_sparse
-
 from sklearn.utils.validation import validate_data
+
+from ._algorithm import predict, fit_forward_selection
 
 
 class Calf(ClassifierMixin, TransformerMixin, BaseEstimator):
@@ -133,24 +133,15 @@ class Calf(ClassifierMixin, TransformerMixin, BaseEstimator):
 
         start = time.time()
 
-        if issparse(X):
-            self.auc_, self.weights_, self.feature_index_ = fit_hv_sparse(
-                X,
-                y,
-                grid=self.grid,
-                auc_tol=self.auc_tol,
-                order_col=self.order_col,
-                verbose=self.verbose,
-            )
-        else:
-            self.auc_, self.weights_, self.feature_index_ = fit_hv(
-                X,
-                y,
-                grid=self.grid,
-                auc_tol=self.auc_tol,
-                order_col=self.order_col,
-                verbose=self.verbose,
-            )
+        # Direct call to algorithmic core without redundant sparse branching
+        self.auc_, self.weights_, self.feature_index_ = fit_forward_selection(
+            X,
+            y,
+            grid=self.grid,
+            auc_tol=self.auc_tol,
+            order_col=self.order_col,
+            verbose=self.verbose,
+        )
 
         self.fit_time_ = time.time() - start
 

@@ -1,4 +1,4 @@
-exclude: '^docs/_build/'
+exclude: '^(docs/_build/|docs/auto_examples/)'
 
 repos:
   # 1. Standard Git sanity checks

@@ -50,7 +50,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils.multiclass import unique_labels
 from sklearn.utils.validation import check_is_fitted, validate_data
 
-from ._utils import fit_columns
+from ._algorithm import fit_columns
 
 
 class AUCSorter(TransformerMixin, BaseEstimator):
@@ -114,7 +114,7 @@ class AUCSorter(TransformerMixin, BaseEstimator):
                 f"but the data contains only one class: {classes[0]}"
             )
 
-        # Compute parallel univariate AUCs via _utils helper function
+        # Compute parallel univariate AUCs via _algorithm
         tups = fit_columns(X_validated, y, grid=self.grid, n_jobs=self.n_jobs)
         self.order_ = np.array([i for _, _, i in tups])
 
